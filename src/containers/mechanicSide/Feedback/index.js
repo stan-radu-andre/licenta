@@ -1,2 +1,2 @@
-import FixYourself from './Appointments';
+import FixYourself from './Feedback';
 export default FixYourself;

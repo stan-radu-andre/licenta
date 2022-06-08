@@ -5,8 +5,6 @@ import {
   Grid,
   Box,
   Modal,
-  Tabs,
-  Tab,
   Card,
   Typography,
   CardContent,
@@ -30,7 +28,8 @@ const style = {
 };
 
 function Profile({ open, onClose }) {
-  const isMechanic = localStorage.getItem('isMechanic'); const handleClose = () => {
+  const isMechanic = JSON.parse(localStorage.getItem('isMechanic'));
+  const handleClose = () => {
     onClose();
   };
   const onLogOut = () => {
@@ -59,7 +58,7 @@ function Profile({ open, onClose }) {
                     Logged in as a {isMechanic ? 'mechanic' : 'customer'}
                   </Typography>
                   <Typography variant="body2">
-                    {isMechanic ? <RegisterMechanic /> : <RegisterClient />}
+                    {isMechanic ? <RegisterMechanic profile /> : <RegisterClient profile />}
                   </Typography>
                 </CardContent>
               </Card>

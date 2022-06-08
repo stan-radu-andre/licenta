@@ -1,21 +1,22 @@
 import React from 'react';
-import LoginRegisterForm from './loginRegisterForm';
+import LoginRegisterClientForm from './loginRegisterClientForm';
 
 function Login(props) {
   const { value, index } = props;
-  const form = [
-    'email',
-    'password',
-  ];
+  const form = {
+    email: '',
+    password: '',
+  };
   const onSuccessLogin = (responseData) => {
-    console.log(responseData)
-    const { accessToken = '' } = responseData;
+    const { accessToken = '', user } = responseData;
     localStorage.setItem('token', accessToken)
+    localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem('isMechanic', user.isMechanic)
+    props.onClose();
   }
   return (
-    <LoginRegisterForm
+    <LoginRegisterClientForm
       form={form}
-      ismechanic={'false'}
       formtype='login'
       value={value}
       index={index}

@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Card, FormControl, CardContent, Select, Typography, InputLabel, MenuItem, Grid } from '@mui/material';
+import { Card, FormControl, CardContent, Select, InputLabel, MenuItem, Grid } from '@mui/material';
 import { getRequest } from '../utils/requests';
+import { makersConst, yearsConst } from '../constants/carsConstants';
 const headers = {
   'x-rapidapi-host': 'car-data.p.rapidapi.com',
   'x-rapidapi-key': '9a7c3e4865msh12ffd49d83cebd9p1d2f4cjsnccdc24d2ba09'
 };
 function AddCarForm(props) {
-  const { onHandleChange } = props;
-  const [manufacturers, setManufacturers] = useState([]);
+  const { onHandleChange, car } = props;
+  const [manufacturers, setManufacturers] = useState(makersConst);
   const [models, setModels] = useState([]);
-  const [years, setYears] = useState([]);
-
-  const [maker, setMaker] = useState('');
-  const [model, setModel] = useState('');
-  const [year, setYear] = useState('');
+  const [years, setYears] = useState(yearsConst);
+  const [maker, setMaker] = useState(car.maker || '');
+  const [model, setModel] = useState(car.model || '');
+  const [year, setYear] = useState(car.year || '');
 
   const handleChange = (field) => (e) => {
     const { target: { value } } = e;
@@ -32,13 +32,13 @@ function AddCarForm(props) {
     }
   }
 
-  useEffect(() => {
-    getManufacturers();
-    setTimeout(() =>
-      getSuppocrtedYears()
-      , 2000
-    )
-  }, []);
+  // useEffect(() => {
+  //   getManufacturers();
+  //   setTimeout(() =>
+  //     getSuppocrtedYears()
+  //     , 3500
+  //   )
+  // }, []);
 
   useEffect(() => {
     onHandleChange(maker, model, year)
@@ -46,7 +46,10 @@ function AddCarForm(props) {
 
   useEffect(() => {
     if (maker && year)
-      getModels(maker, year);
+      setTimeout(() =>
+        getModels(maker, year)
+        , 2000
+      )
   }, [maker, year])
 
   const getModels = (maker, year) => {
@@ -125,9 +128,13 @@ function AddCarForm(props) {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={model}
+                  placeholder={model}
                   label="Age"
                   onChange={handleChange('Model')}
                 >
+                  <MenuItem value={model}>
+                    <em>{model}</em>
+                  </MenuItem>
                   {
                     models.map(({ model }, index) => (
                       <MenuItem key={index} value={model}>{model}</MenuItem>

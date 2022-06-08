@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const carSchema = new Schema(
   {
-    name: {
+    maker: {
       type: String,
       required: true,
     },

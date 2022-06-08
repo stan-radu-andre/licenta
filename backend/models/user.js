@@ -21,6 +21,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    age: {
+      type: Number,
+    },
     isMechanic: {
       type: Boolean,
       required: true,
@@ -37,6 +40,12 @@ const userSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    appointments: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Appointment',
+      },
+    ],
   },
   {
     timestamps: true,

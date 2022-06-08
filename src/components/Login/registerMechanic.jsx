@@ -9,27 +9,44 @@ import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRou
 import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import AddCarForm from '../addCarForm';
 import Alerts from '../Alerts';
-import { postRequest } from '../../utils/requests';
+import { postRequest, putRequest } from '../../utils/requests';
 import './login.scss';
 
 function RegisterClient(props) {
-  const { children, value, index, ...other } = props;
-  const formFields = [
-    'name',
-    'email',
-    'number',
-    'password',
-    'confirmPassword',
-    'age'
-  ];
-  const [form, setForm] = useState(formFields.reduce((form, field) => ({ ...form, [field]: '' }), {}));
+  const { children, value, index, profile, ...other } = props;
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const { mechanic = {} } = user;
+  const { preferedCars = [{
+    maker: '',
+    year: '',
+    model: '',
+  }] } = mechanic;
+  let formFields = {
+    name: user.name || '',
+    email: user.email || '',
+    number: user.number || '',
+    age: user.age || '',
+  };
+  if (!profile) {
+    formFields = {
+      ...formFields,
+      password: '',
+      confirmPassword: '',
+    };
+  }
+
+  const [form, setForm] = useState(formFields);
   const [messages, setMessages] = useState([]);
+  const [cars, setCars] = useState(preferedCars);
+  console.log(preferedCars, cars);
+
   const onHandleChange = (labelName, value) => {
     setForm({
       ...form,
       [labelName]: value
     });
   }
+
   const handleChangeCars = (carIndex) => (maker, model, year) => {
     cars[carIndex] = {
       maker,
@@ -38,11 +55,6 @@ function RegisterClient(props) {
     }
     setCars(cars)
   }
-  const [cars, setCars] = useState([{
-    maker: '',
-    year: '',
-    model: '',
-  }]);
 
 
   const addNewCar = () => setCars([
@@ -69,18 +81,45 @@ function RegisterClient(props) {
     }
   }
 
-  const handleSubmit = async () => {
-    console.log(form);
-    const { ismechanic, formtype } = props;
-    form['isMechanic'] = ismechanic;
-    form.cars = cars;
-    console.log(form);
-    return;
+  const onSuccessLogin = (responseData) => {
+    const { accessToken = '', user } = responseData;
+    localStorage.setItem('token', accessToken)
+    localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem('isMechanic', user.isMechanic)
+    props.onClose();
+  }
 
-    postRequest(`http://localhost:4000/users/${formtype}`, form)
+  const handleProfileSubmit = (form) => {
+    const profileForm = {
+      ...form,
+      isMechanic: true,
+      cars
+    };
+    putRequest('http://localhost:4000/users/profile', profileForm)
       .then((response) => {
-        console.log('reee', response)
+        const { data = {} } = response;
+        const { user = {} } = data;
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify(user))
         setMessages([{ message: 'Success', type: 'success' }]);
+      })
+      .catch(e => {
+        const { response = {} } = e;
+        const { data = {} } = response;
+        setMessages([{ message: data && data.error ? data.error : 'Something went wrong', type: 'error' }]);
+      })
+  }
+
+  const handleSubmit = async () => {
+    if (profile) {
+      return handleProfileSubmit(form);
+    }
+    form['isMechanic'] = true;
+    form.cars = cars;
+    postRequest(`http://localhost:4000/users/register`, form)
+      .then((response) => {
+        setMessages([{ message: 'Success', type: 'success' }]);
+        onSuccessLogin(response.data);
       })
       .catch(e => {
         const { response: { data: { error = '' } } } = e;
@@ -100,7 +139,7 @@ function RegisterClient(props) {
       {value === index && (
         <Grid container spacing={2} className=' mt-3'>
           <Form
-            form={formFields}
+            form={form}
             onHandleChange={onHandleChange}
           />
           <Grid item xs={11}>
@@ -113,6 +152,7 @@ function RegisterClient(props) {
               <Grid item xs={12} container>
                 <Grid item xs={10}>
                   <AddCarForm
+                    car={car}
                     onHandleChange={handleChangeCars(index)}
                   />
                 </Grid>

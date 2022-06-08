@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const appointmentSchema = new Schema(
   {
-    title: {
+    description: {
       type: String,
       required: true,
     },
@@ -21,7 +21,7 @@ const appointmentSchema = new Schema(
     },
     mechanic: {
       type: Schema.Types.ObjectId,
-      ref: 'Mechanic',
+      ref: 'User',
     },
     status: {
       type: String,

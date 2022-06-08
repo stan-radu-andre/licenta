@@ -1,0 +1,17 @@
+.MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.grey-background {
+  background-color: #fbf7f7;
+  max-width: none;
+  .MuiFormControl-root.MuiTextField-root {
+    background-color: #fbf7f7;
+  }
+  .MuiCardActions-root.MuiCardActions-spacing
+    .MuiButton-root.MuiButton-contained.MuiButton-containedPrimary {
+    background-color: #89b0d7;
+  }
+}
+
+.title-text {
+  .MuiCardHeader-title {
+    font-size: 1.5rem;
+  }
+}

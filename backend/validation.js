@@ -7,6 +7,12 @@ const registerSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const profileSchema = Joi.object({
+  name: Joi.string().min(6).required(),
+  email: Joi.string().min(6).required().email(),
+  number: Joi.string().min(6).required(),
+});
+
 const loginSchema = Joi.object({
   email: Joi.string().min(6).required().email(),
   password: Joi.string().min(6).required(),
@@ -21,6 +27,23 @@ const options = {
 const validateRegister = (req, res, next) => {
   // validate request body against schema
   const { error, value } = registerSchema.validate(req.body, options);
+  if (error) {
+    // on fail return comma separated errors
+    res.status(400).json({
+      error: `Validation error: ${error.details
+        .map((x) => x.message)
+        .join(', ')}`,
+    });
+  } else {
+    // on success replace req.body with validated value and trigger next middleware function
+    req.body = value;
+    next();
+  }
+};
+
+const validateProfile = (req, res, next) => {
+  // validate request body against schema
+  const { error, value } = profileSchema.validate(req.body, options);
   if (error) {
     // on fail return comma separated errors
     res.status(400).json({
@@ -52,4 +75,4 @@ const validateLogin = (req, res, next) => {
   }
 };
 
-module.exports = { validateRegister, validateLogin };
+module.exports = { validateRegister, validateLogin, validateProfile };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Grid,
@@ -66,9 +66,9 @@ function LoginAndRegister({ open, onClose }) {
               <Button onClick={handleClose}>x</Button>
             </Grid>
           </Grid>
-          <Login value={tab} index={0} />
-          <RegisterClient value={tab} index={1} />
-          <RegisterMechanic value={tab} index={2} />
+          <Login value={tab} onClose={handleClose} index={0} />
+          <RegisterClient onClose={handleClose} value={tab} index={1} />
+          <RegisterMechanic onClose={handleClose} value={tab} index={2} />
         </Box>
       </Modal>
     </React.Fragment >

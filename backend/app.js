@@ -13,6 +13,7 @@ const methodOverride = require('method-override');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var appointmentsRouter = require('./routes/appointments');
+var mechanicsRouter = require('./routes/mechanics');
 var getWebsite = require('./routes/getWebsite');
 const Blog = require('./models/user');
 
@@ -50,6 +51,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/getWebsite', getWebsite);
 app.use('/appointments', authenticateToken, appointmentsRouter);
+app.use('/mechanics', authenticateToken, mechanicsRouter);
 
 app.get('/add-blog', authenticateToken, (req, res) => {
   const blog = new Blog({

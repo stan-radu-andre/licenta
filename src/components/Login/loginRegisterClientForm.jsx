@@ -5,14 +5,15 @@ import {
   Button,
 } from '@mui/material';
 import { postRequest } from '../../utils/requests';
-import Alerts from '../Alerts';
 import Form from './form';
+import Alerts from '../Alerts';
 
-function LoginRegisterForm(props) {
+function LoginRegisterClientForm(props) {
   const { children,
     value,
     index,
     form: propsForm,
+    isProfile,
     onSuccessRequest,
     ...other } = props;
   const [form, setForm] = useState({
@@ -20,26 +21,31 @@ function LoginRegisterForm(props) {
   });
   const [messages, setMessages] = useState([]);
   const onHandleChange = (labelName, value) => {
-    console.log('assad', value, form);
     setForm({
       ...form,
       [labelName]: value
     });
   }
-  const handleSubmit = async () => {
-    console.log(form);
-    const { ismechanic, formtype } = props;
-    form['isMechanic'] = ismechanic;
 
-    postRequest(`http://localhost:4000/users/${formtype}`, form)
+  const handleSubmit = async () => {
+    if (isProfile) {
+      return props.handleProfileSubmit(form);
+    }
+    const { ismechanic, formtype } = props;
+    const formData = { ...form }
+    if (formtype === 'register') {
+      formData['isMechanic'] = ismechanic;
+    }
+    postRequest(`http://localhost:4000/users/${formtype}`, formData)
       .then((response) => {
         setMessages([{ message: 'Success', type: 'success' }]);
         onSuccessRequest(response.data);
       })
       .catch(e => {
-        console.log(e, e.response);
-        const { response: { data } } = e;
-        setMessages([{ message: data ? data.error : 'Something went wrong', type: 'error' }]);
+        console.log(e);
+        const { response = {} } = e;
+        const { data = {} } = response;
+        setMessages([{ message: data.error ? data.error : 'Something went wrong', type: 'error' }]);
       })
   }
 
@@ -59,7 +65,7 @@ function LoginRegisterForm(props) {
             </InputLabel>
           </Grid>
           <Form
-            form={propsForm}
+            form={form}
             onHandleChange={onHandleChange}
           />
           <Grid item xs={12}>
@@ -72,4 +78,4 @@ function LoginRegisterForm(props) {
   );
 }
 
-export default LoginRegisterForm;
+export default LoginRegisterClientForm;

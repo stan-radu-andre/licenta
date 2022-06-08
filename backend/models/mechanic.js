@@ -3,13 +3,14 @@ const Schema = mongoose.Schema;
 
 const mechanicSchema = new Schema(
   {
-    name: {
+    userId: {
       type: String,
-      required: true,
     },
-    password: {
-      type: String,
-      required: true,
+    rating: {
+      type: Number,
+    },
+    appointmentsDone: {
+      type: Number,
     },
     preferedCars: [
       {
@@ -17,16 +18,6 @@ const mechanicSchema = new Schema(
         ref: 'Car',
       },
     ],
-    appointments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Appointment',
-      },
-    ],
-    body: {
-      type: String,
-      required: true,
-    },
   },
   {
     timestamps: true,
