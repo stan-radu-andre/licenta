@@ -1,29 +1,13 @@
 import './FindMechanic.scss';
 import React, { useState, useEffect } from 'react';
 import Alerts from '../../../components/Alerts';
-import { Card, FormControl, CardContent, CardHeader, Avatar, Select, Typography, InputLabel, MenuItem, Grid, Button, Input, Modal, Box } from '@mui/material';
-import { blue } from '@mui/material/colors';
+import { Card, FormControl, CardContent, Select, Typography, InputLabel, MenuItem, Grid, Button, Input } from '@mui/material';
 import { getRequest } from '../../../utils/requests';
-import MechanicsCards from '../../../components/ClientAppointments/MechanicsCards';
-import OrderModal from '../../../components/Booking/OrderModal';
+import RecommendedMechanics from '../../../components/ClientAppointments/RecommendedMechanics';
+import MessageModal from '../../../components/MessageModal';
 
 export const AppointmentContext = React.createContext({});
-
-// sursa: https://mui.com/material-ui/react-modal/
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  pt: 2,
-  px: 4,
-  pb: 3,
-  borderRadius: '5px'
-};
-
+// sursa: https://datamoapi.com/2021/10/01/quick-start-guide/
 const headers = {
   'x-rapidapi-host': 'car-data.p.rapidapi.com',
   'x-rapidapi-key': '9a7c3e4865msh12ffd49d83cebd9p1d2f4cjsnccdc24d2ba09'
@@ -38,14 +22,12 @@ export function FindMechanic() {
   const [year, setYear] = useState('');
   const [description, setDescrition] = useState('');
   const [mechanics, setMechanics] = useState('');
-
   const [appointment, setAppointment] = useState({});
-
   const [messages, setMessages] = useState([]);
-  const [opendModal, setModalOpen] = useState(false);
-  const [informatinalModal, setInformatinalModal] = useState(false);
+  const [messageModal, setMessagesModal] = useState('');
 
-  // const [engine, setEngine] = useState('');
+  const user = JSON.parse(localStorage.getItem('user'));
+
   const handleChange = (field) => (e) => {
     const { target: { value } } = e;
     switch (field) {
@@ -80,19 +62,11 @@ export function FindMechanic() {
       getModels(maker, year);
   }, [maker, year])
 
-  const handleClose = () => {
-    setModalOpen(false);
-  };
-
-  const handleInformatinalClose = () => {
-    setInformatinalModal(false);
-  };
-
   const getModels = (maker, year) => {
     getRequest(`https://car-data.p.rapidapi.com/cars?make=${maker}&year=${year}`, headers)
       .then((response) => {
         const { data: models } = response;
-        setModels(models);
+        setModels([{ model: "Other" }, ...models]);
       });
   }
 
@@ -115,7 +89,7 @@ export function FindMechanic() {
   }
 
   const getRecommendedMechanics = () => {
-    getRequest('http://localhost:4000/mechanics/recommendations')
+    getRequest(`http://localhost:4000/mechanics/recommendations/${maker}/${model}`)
       .then((response) => {
         const { mechanics } = response.data;
         setMechanics(mechanics);
@@ -128,7 +102,10 @@ export function FindMechanic() {
   }
 
   const sumbitOrder = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+      setMessagesModal('Log in first');
+      return;
+    }
     const appointment = {
       maker,
       year,
@@ -140,15 +117,9 @@ export function FindMechanic() {
     getRecommendedMechanics();
   }
 
-  const handleSumbitOrder = ({ preferedDates, maxTime, minTime, asap, anytime }) => () => {
-    const orderData = { preferedDates, maxTime, minTime, asap, anytime };
-    console.log(orderData);
-    setModalOpen(false);
-    setInformatinalModal(true);
-  }
-
   return (
     <div className="m-5">
+      <MessageModal message={messageModal} />
       <Card>
         <CardContent>
           {/* sursa: https://mui.com/material-ui/react-typography/ */}
@@ -227,50 +198,9 @@ export function FindMechanic() {
             </Grid>
             <Alerts messages={messages} />
           </Grid>
-          <AppointmentContext.Provider value={appointment}>
-            <MechanicsCards mechanics={mechanics} />
-          </AppointmentContext.Provider>
-          <Card>
-            {mechanics.length >= 0 ?
-              <CardContent>
-                <Card className='order-card mt-2' variant="outlined">
-                  {/* sursa: https://mui.com/material-ui/react-card/ */}
-                  <CardHeader
-                    avatar={
-                      <Avatar sx={{ bgcolor: blue[200] }} aria-label="mechanic">
-                        O
-                      </Avatar>
-                    }
-                    action={
-                      (
-                        <>
-                          <Button className="p-3" variant="outlined" onClick={() => setModalOpen(true)}>Make an order</Button>
-                        </>
-                      )
-                    }
-                    title={"Make an order"}
-                    subheader='If you are not sure about the work on your car, you can make an order and a mechanic will pick up your request'
-                  />
-                </Card>
-              </CardContent>
-              : ''}
-          </Card>
+          <RecommendedMechanics appointment={appointment} mechanics={mechanics} />
         </CardContent>
       </Card>
-      <OrderModal opendModal={opendModal} handleClose={handleClose} handleSumbitOrder={handleSumbitOrder} />
-      <Modal
-        open={informatinalModal}
-        onClose={handleInformatinalClose}
-        aria-labelledby="child-modal-title"
-        aria-describedby="child-modal-description"
-      >
-        <Box sx={{ ...style }}>
-          <div className="d-flex justify-content-end"><Button id="modal-close-button" onClick={handleInformatinalClose}>X</Button></div>
-          <p id="child-modal-description">
-            Your order will appear on the home page and on the calendar once it's accepted by a mechanic.
-          </p>
-        </Box>
-      </Modal>
     </div >
   )
 }

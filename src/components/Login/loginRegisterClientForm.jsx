@@ -15,6 +15,7 @@ function LoginRegisterClientForm(props) {
     form: propsForm,
     isProfile,
     onSuccessRequest,
+    handleProfileSubmit,
     ...other } = props;
   const [form, setForm] = useState({
     ...propsForm
@@ -29,7 +30,7 @@ function LoginRegisterClientForm(props) {
 
   const handleSubmit = async () => {
     if (isProfile) {
-      return props.handleProfileSubmit(form);
+      return handleProfileSubmit(form);
     }
     const { ismechanic, formtype } = props;
     const formData = { ...form }
@@ -42,7 +43,6 @@ function LoginRegisterClientForm(props) {
         onSuccessRequest(response.data);
       })
       .catch(e => {
-        console.log(e);
         const { response = {} } = e;
         const { data = {} } = response;
         setMessages([{ message: data.error ? data.error : 'Something went wrong', type: 'error' }]);

@@ -26,6 +26,17 @@ const buildMechanicCars = (cars) => {
   });
 };
 
+const getToken = (user, email) => {
+  return jwt.sign(
+    {
+      email,
+      id: user._id,
+      isMechanic: user.isMechanic,
+    },
+    process.env.ACCESS_TOKEN_SECRET
+  );
+};
+
 router.post('/register', validateRegister, async (req, res) => {
   const { name, email, password, isMechanic, number, age, cars } = req.body;
 
@@ -47,28 +58,38 @@ router.post('/register', validateRegister, async (req, res) => {
   if (!isMechanic) {
     try {
       const savedUser = await user.save();
-      res.json({ savedUser });
+      const token = getToken(user, email);
+      res.json({ user: savedUser, accessToken: token });
     } catch (err) {
       res.status(400).send(err);
     }
   } else {
     try {
-      Mechanic.remove({ _id: user.mechanic });
+      // Mechanic.remove({ _id: user.mechanic });
       const mechanic = new Mechanic({
         userId: user._id,
-        preferedCars: buildMechanicCars(cars),
+        preferedCars: cars,
       });
       const savedMechanic = await mechanic.save();
       user.isMechanic = true;
       user.mechanic = savedMechanic;
       const savedUser = await user.save();
-      res.json({ savedUser });
+      const token = getToken(user, email);
+      res.json({ user: savedUser, accessToken: token });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   }
 });
+
+const getMechanic = async (mechanicId) => {
+  try {
+    return await Mechanic.findOne({ _id: mechanicId }).populate('preferedCars');
+  } catch (err) {
+    console.log('err', err);
+  }
+};
 
 router.put('/profile', validateProfile, async (req, res) => {
   const { name, email, isMechanic, number, age, cars } = req.body;
@@ -90,15 +111,16 @@ router.put('/profile', validateProfile, async (req, res) => {
     }
   } else {
     try {
-      const mechanic = new Mechanic({
-        preferedCars: buildMechanicCars(cars),
-      });
+      const mechanic = await getMechanic(user.mechanic._id);
+      mechanic.preferedCars = buildMechanicCars(cars);
+      console.log('savedMechanic', mechanic);
       const savedMechanic = await mechanic.save();
       user.isMechanic = true;
       user.mechanic = savedMechanic;
       const savedUser = await user.save();
       res.send({ user: savedUser });
     } catch (err) {
+      console.log(err);
       res.status(400).send(err);
     }
   }
@@ -106,12 +128,15 @@ router.put('/profile', validateProfile, async (req, res) => {
 
 router.post('/login', validateLogin, async (req, res, next) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).populate({
+    path: 'mechanic',
+  });
+  // .populate('mechanic mechanic.preferedCars')
+  // .populate({ path: 'mechanic.preferedCars' });
   if (!user) {
     return res.status(400).json({ error: 'Email or password are wrong' });
   }
   const validPass = await bcrypt.compare(password, user.password);
-
   if (validPass) {
     const accessToken = jwt.sign(
       {
@@ -122,32 +147,43 @@ router.post('/login', validateLogin, async (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET
     );
     res.json({ accessToken: accessToken, user });
+    // if (!user.isMechanic) {
+    //   res.json({ accessToken: accessToken, user });
+    // } else {
+    //   const mechanicObject = await populateMechanic(user.mechanic.toString());
+    //   user.mechanic = mechanicObject;
+    //   res.json({
+    //     accessToken: accessToken,
+    //     user,
+    //     userMehcnic: { ...user, mechanic: mechanicObject },
+    //   });
+    // }
   } else {
     return res.status(400).json({ error: 'Email or password are wrong' });
   }
 });
 
-router.get('/appointments/:id', async (req, res, next) => {
+router.get('/appointments_user/:id', async (req, res, next) => {
   const userId = req.params.id;
   try {
-    User.findOne({ _id: userId })
+    User.findOne({
+      _id: userId,
+    })
       .populate({
         path: 'appointments',
         populate: {
-          path: 'car',
+          path: 'mechanic',
+          populate: {
+            path: 'mechanic',
+          },
         },
-        // populate: {
-        //   path: 'appointments.car',
-        //   model: 'Car',
-        // },
-        // },
       })
       .then((user) => {
         const { appointments = [] } = user;
         res.send({ message: 'Success', appointments });
       });
   } catch (error) {
-    console.log('eeerror', error);
+    console.log('error', error);
     res.status(400).send({ error });
   }
 });

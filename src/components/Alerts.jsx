@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+import AlertTitle from '@mui/material/AlertTitle';
 import Snackbar from '@mui/material/Snackbar';
 import './styles.scss';
 
@@ -31,26 +32,41 @@ export default function Alerts({ messages = [] }) {
       case 'error':
         return (
           <Snackbar open={message.open} autoHideDurtion={6000} onClose={handleClose(index)} anchorOrigin={orientation} key={index}>
-            <Alert severity="error" onClose={handleClose(index)}>{message.message}</Alert>
+            <Alert severity="error" onClose={handleClose(index)}>
+              <AlertTitle>Error</AlertTitle>
+              {message.message}
+            </Alert>
           </Snackbar>
         );
       case 'warning':
         return (
           <Snackbar open={message.open} autoHideDurtion={6000} onClose={handleClose(index)} anchorOrigin={orientation} key={index}>
-            <Alert severity="warning" onClose={handleClose(index)}>{message.message}</Alert>
+            <AlertTitle>Warning</AlertTitle>
+            <Alert severity="warning" onClose={handleClose(index)}>
+              <AlertTitle>Error</AlertTitle>
+              {message.message}
+            </Alert>
           </Snackbar>
         );
       case 'success':
         return (
           <Snackbar autoHideDurtion={4000} open={message.open} onClose={handleClose(index)} anchorOrigin={orientation} key={index}>
-            <Alert severity="success" onClose={handleClose(index)}>{message.message}</Alert>
+            <AlertTitle>Success</AlertTitle>
+            <Alert severity="success" onClose={handleClose(index)}>
+              <AlertTitle>Error</AlertTitle>
+              {message.message}
+            </Alert>
           </Snackbar>
         );
       case 'info':
       default:
         return (
           <Snackbar open={message.open} autoHideDurtion={6000} onClose={handleClose(index)} anchorOrigin={orientation} key={index}>
-            <Alert severity="info" onClose={handleClose(index)}>{message.message}</Alert>
+            <AlertTitle>Info</AlertTitle>
+            <Alert severity="info" onClose={handleClose(index)}>
+              <AlertTitle>Error</AlertTitle>
+              {message.message}
+            </Alert>
           </Snackbar>
         );
     }

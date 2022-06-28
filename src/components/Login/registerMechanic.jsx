@@ -10,17 +10,35 @@ import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
 import AddCarForm from '../addCarForm';
 import Alerts from '../Alerts';
 import { postRequest, putRequest } from '../../utils/requests';
+// import { getMechanic } from '../../utils/apiRequests';
 import './login.scss';
 
 function RegisterClient(props) {
   const { children, value, index, profile, ...other } = props;
   const user = JSON.parse(localStorage.getItem('user')) || {};
+  // useEffect(() => {
+  //   async function fetchMechanic() {
+  //     const user = JSON.parse(localStorage.getItem('user')) || {};
+  //     if (user.mechanic && user.mechanic._id) {
+  //       const mechanic = await getMechanic(user.mechanic._id);
+  //       console.log('mechanic', mechanic);
+  //     }
+  //   };
+  //   fetchMechanic();
+  // }, [])
   const { mechanic = {} } = user;
-  const { preferedCars = [{
+  let { preferedCars = [{
     maker: '',
     year: '',
     model: '',
   }] } = mechanic;
+  if (preferedCars.length === 0) {
+    preferedCars = [{
+      maker: '',
+      year: '',
+      model: '',
+    }]
+  }
   let formFields = {
     name: user.name || '',
     email: user.email || '',
@@ -38,7 +56,6 @@ function RegisterClient(props) {
   const [form, setForm] = useState(formFields);
   const [messages, setMessages] = useState([]);
   const [cars, setCars] = useState(preferedCars);
-  console.log(preferedCars, cars);
 
   const onHandleChange = (labelName, value) => {
     setForm({
@@ -66,7 +83,6 @@ function RegisterClient(props) {
     }]);
 
   const removeCar = (index) => () => {
-    console.log(cars);
     if (cars.length > 1) {
       cars.splice(index, 1);
       setCars(cars)
@@ -122,8 +138,8 @@ function RegisterClient(props) {
         onSuccessLogin(response.data);
       })
       .catch(e => {
-        const { response: { data: { error = '' } } } = e;
-        console.log(e.response, error);
+        const { response: data = {} } = e;
+        const { error = '' } = data;
         setMessages([{ message: error, type: 'error' }]);
       })
   }
@@ -144,12 +160,13 @@ function RegisterClient(props) {
           />
           <Grid item xs={11}>
             <InputLabel htmlFor="input-with-icon-adornment">
-              On which cars would you like to work on?
+              On which cars would you like to work on?<br />
+              Enter below, in the order of preferences:
             </InputLabel>
           </Grid>
           <div className='cars-container'>
             {cars.map((car, index) =>
-              <Grid item xs={12} container>
+              <Grid key={index} item xs={12} container>
                 <Grid item xs={10}>
                   <AddCarForm
                     car={car}

@@ -1,23 +1,32 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Car = require('./car').schema;
 
 const appointmentSchema = new Schema(
   {
     description: {
       type: String,
-      required: true,
     },
     date: {
       type: Date,
-      required: true,
+      required: false,
     },
-    car: {
-      type: Schema.Types.ObjectId,
-      ref: 'Car',
+    time: {
+      type: Date,
     },
+    timeEstimation: {
+      type: String,
+    },
+    car: Car,
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+    },
+    rating: {
+      type: Number,
+    },
+    ratingFeedback: {
+      type: String,
     },
     mechanic: {
       type: Schema.Types.ObjectId,
@@ -27,6 +36,11 @@ const appointmentSchema = new Schema(
       type: String,
       default: 'new',
     },
+    preferedDates: [Date],
+    minTime: [Date],
+    maxTime: [Date],
+    asap: Boolean,
+    anytime: Boolean,
   },
   {
     timestamps: true,

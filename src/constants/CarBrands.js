@@ -456,3 +456,10 @@ export const carBrands = [
     name: 'Zil',
   },
 ];
+
+export const findIcon = (model) => {
+  const foundMaker = carBrands.find(
+    (brand) => brand.name.toLocaleLowerCase() === model.toLocaleLowerCase()
+  );
+  return foundMaker.logo;
+};

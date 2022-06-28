@@ -1,3 +1,15 @@
 .disabled-calendar {
   opacity: 0.6;
 }
+
+.booking-modal {
+  .cld_noslotWidth {
+    width: auto;
+  }
+  .MuiBox-root {
+    width: 80%;
+    max-width: 1200px;
+    max-height: 80%;
+    overflow: auto;
+  }
+}

@@ -12,7 +12,7 @@ function Form({ form, onHandleChange }) {
       {Object.keys(form).map((field, index) => (
         <Grid item xs={6} key={index}>
           <TextField
-            id="input-with-icon-textfield"
+            id={`input-with-icon-textfield-${index}`}
             label={`${field[0].toUpperCase()}${field.slice(1)}`}
             onChange={(e) => onHandleChange(field, e.target?.value)}
             type={field === 'confirmPassword' ? 'password' : field}

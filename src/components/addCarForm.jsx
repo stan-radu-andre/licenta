@@ -8,12 +8,10 @@ const headers = {
 };
 function AddCarForm(props) {
   const { onHandleChange, car } = props;
-  const [manufacturers, setManufacturers] = useState(makersConst);
   const [models, setModels] = useState([]);
-  const [years, setYears] = useState(yearsConst);
-  const [maker, setMaker] = useState(car.maker || '');
-  const [model, setModel] = useState(car.model || '');
-  const [year, setYear] = useState(car.year || '');
+  const [maker, setMaker] = useState(car.maker || 'Any maker');
+  const [model, setModel] = useState(car.model || 'Any model');
+  const [year, setYear] = useState(car.year || 'Any year');
 
   const handleChange = (field) => (e) => {
     const { target: { value } } = e;
@@ -45,10 +43,10 @@ function AddCarForm(props) {
   }, [onHandleChange, maker, model, year]);
 
   useEffect(() => {
-    if (maker && year)
+    if (maker && maker !== "Any maker" && year && year !== "Any year")
       setTimeout(() =>
         getModels(maker, year)
-        , 2000
+        , 1000
       )
   }, [maker, year])
 
@@ -56,27 +54,27 @@ function AddCarForm(props) {
     getRequest(`https://car-data.p.rapidapi.com/cars?make=${maker}&year=${year}`, headers)
       .then((response) => {
         const { data: models } = response;
-        setModels(models);
+        setModels([{ model: 'Any model' }, ...models]);
       });
   }
 
-  const getManufacturers = () => {
-    getRequest("https://car-data.p.rapidapi.com/cars/makes", headers)
-      .then((response) => {
-        const { data: manufacturers } = response;
-        manufacturers.sort();
-        setManufacturers(manufacturers);
-      });
-  }
+  // const getManufacturers = () => {
+  //   getRequest("https://car-data.p.rapidapi.com/cars/makes", headers)
+  //     .then((response) => {
+  //       const { data: manufacturers } = response;
+  //       manufacturers.sort();
+  //       setManufacturers(manufacturers);
+  //     });
+  // }
 
-  const getSuppocrtedYears = () => {
-    getRequest("https://car-data.p.rapidapi.com/cars/years", headers)
-      .then((response) => {
-        const { data: years } = response;
-        years.sort();
-        setYears(years);
-      });
-  }
+  // const getSuppocrtedYears = () => {
+  //   getRequest("https://car-data.p.rapidapi.com/cars/years", headers)
+  //     .then((response) => {
+  //       const { data: years } = response;
+  //       years.sort();
+  //       setYears(years);
+  //     });
+  // }
 
   return (
     <div className="">
@@ -94,7 +92,7 @@ function AddCarForm(props) {
                   onChange={handleChange('Maker')}
                 >
                   {
-                    manufacturers.map((manufacturer, index) => (
+                    makersConst.map((manufacturer, index) => (
                       <MenuItem key={index} value={manufacturer}>{manufacturer}</MenuItem>
                     ))
                   }
@@ -103,17 +101,17 @@ function AddCarForm(props) {
             </Grid>
             <Grid item xs={4}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Year</InputLabel>
+                <InputLabel id="demo-simple-select-label">Year (&plusmn; 3)</InputLabel>
                 <Select
                   fullWidth
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={year}
-                  label="Age"
+                  label="Year (&plusmn; 3)"
                   onChange={handleChange('Year')}
                 >
                   {
-                    years.map((year, index) => (
+                    yearsConst.map((year, index) => (
                       <MenuItem key={index} value={year}>{year}</MenuItem>
                     ))
                   }
@@ -129,11 +127,12 @@ function AddCarForm(props) {
                   id="demo-simple-select"
                   value={model}
                   placeholder={model}
-                  label="Age"
+                  label="Model"
                   onChange={handleChange('Model')}
+                  disabled={year === 'Any year' || maker === 'Any maker'}
                 >
-                  <MenuItem value={model}>
-                    <em>{model}</em>
+                  <MenuItem value={car.model}>
+                    <em>{car.model}</em>
                   </MenuItem>
                   {
                     models.map(({ model }, index) => (

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Car = require('./car').schema;
 
 const userSchema = new Schema(
   {
@@ -32,10 +33,7 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Mechanic',
     },
-    car: {
-      type: Schema.Types.ObjectId,
-      ref: 'Car',
-    },
+    car: Car,
     date: {
       type: Date,
       default: Date.now,

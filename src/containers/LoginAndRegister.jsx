@@ -54,7 +54,7 @@ function LoginAndRegister({ open, onClose }) {
         aria-describedby="child-modal-description"
       >
         <Box sx={{ ...style, width: 'fit-content', maxWidth: '800px' }}>
-          <Grid container spacing={2}>
+          <Grid container>
             <Grid item xs={11}>
               <Tabs value={tab} onChange={handleChange} aria-label="basic tabs example">
                 <Tab label="Login" {...a11yProps(0)} />

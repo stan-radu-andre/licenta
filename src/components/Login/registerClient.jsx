@@ -51,7 +51,7 @@ function RegisterClient(props) {
     <>
       <LoginRegisterClientForm
         form={form}
-        ismechanic={false}
+        ismechanic={'false'}
         formtype='register'
         value={value}
         index={index}

@@ -2,3 +2,22 @@
   position: fixed;
   top: 0;
 }
+.fc-event {
+  cursor: pointer;
+}
+
+.readonly-calendar {
+  .cld_noslotWidth.cld_container {
+    width: 100%;
+  }
+  .cld_container td {
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+.card-max-width {
+  max-width: 800px;
+  margin: 0 auto;
+  height: 100vh;
+}

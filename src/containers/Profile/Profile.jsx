@@ -1,5 +1,6 @@
 import './Profile.scss';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Button,
   Grid,
@@ -29,6 +30,7 @@ const style = {
 
 function Profile({ open, onClose }) {
   const isMechanic = JSON.parse(localStorage.getItem('isMechanic'));
+  const history = useHistory();
   const handleClose = () => {
     onClose();
   };
@@ -37,6 +39,7 @@ function Profile({ open, onClose }) {
     localStorage.removeItem('user');
     localStorage.removeItem('isMechanic');
     onClose();
+    history.push('/home');
   }
   return (
     <React.Fragment>
@@ -49,7 +52,7 @@ function Profile({ open, onClose }) {
         <Box sx={{ ...style, width: 'fit-content', maxWidth: '800px' }}>
           <Grid container>
             <Grid item xs={11}>
-              <Card variant="outlined">
+              <Card variant="">
                 <CardActions>
                   <Button size="small" onClick={onLogOut}>Log out</Button>
                 </CardActions>
@@ -57,9 +60,9 @@ function Profile({ open, onClose }) {
                   <Typography variant="h5" component="div">
                     Logged in as a {isMechanic ? 'mechanic' : 'customer'}
                   </Typography>
-                  <Typography variant="body2">
+                  <div>
                     {isMechanic ? <RegisterMechanic profile /> : <RegisterClient profile />}
-                  </Typography>
+                  </div>
                 </CardContent>
               </Card>
             </Grid>

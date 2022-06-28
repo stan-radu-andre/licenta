@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Car = require('./car').schema;
 
 const mechanicSchema = new Schema(
   {
@@ -7,17 +8,14 @@ const mechanicSchema = new Schema(
       type: String,
     },
     rating: {
-      type: Number,
+      type: String,
     },
     appointmentsDone: {
       type: Number,
     },
-    preferedCars: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Car',
-      },
-    ],
+    desciption: String,
+    address: String,
+    preferedCars: [Car],
   },
   {
     timestamps: true,

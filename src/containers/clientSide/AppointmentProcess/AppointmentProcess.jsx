@@ -31,11 +31,10 @@ function AppointmentProcess(props) {
   useEffect(() => {
     if (data) {
       const { selectedMechanic: mechanic = {} } = data;
-      getRequest(`http://localhost:4000/users/appointments/${mechanic._id}`)
+      getRequest(`http://localhost:4000/appointments/mechanic/${mechanic._id}/new`)
         .then((response) => {
           const { appointments } = response.data;
           setMechanicAppointments(appointments);
-          console.log('appointments', appointments)
         })
     }
   }, [data]);
@@ -63,10 +62,8 @@ function AppointmentProcess(props) {
     postRequest(`http://localhost:4000/appointments/create`, order)
       .then((req) => {
         setMessages([{ message: 'Success', type: 'success' }]);
-        console.log(req);
       })
       .catch(e => {
-        console.log(e, e.response);
         const { response: { data } } = e;
         if (data?.error) {
           return setMessages([{ message: data.error.message ? data.error.message : data.error, type: 'error' }]);
@@ -77,7 +74,6 @@ function AppointmentProcess(props) {
 
   if (data) {
     const { selectedMechanic: mechanic = {}, appointmentData = {} } = data;
-    console.log(appointmentData, mechanic);
     return (
       <>
         <Alerts messages={messages} />
