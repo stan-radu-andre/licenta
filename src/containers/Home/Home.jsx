@@ -73,7 +73,7 @@ function Home() {
           spacing={2}
           style={{ height: `${parseInt(calendarHeight) + 217}px` }}
         >
-          <Grid item xs={8} md={8}>
+          <Grid item xs={7} md={8}>
             <div id="calendar-container" className="home-calendar">
               <BookingCalendar
                 appointments={stateAppointments || []}

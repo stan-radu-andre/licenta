@@ -87,11 +87,11 @@ function CustomNavbar() {
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='m-auto'>
-              <Nav.Link className="m-3" href="/home">Appointments</Nav.Link>
+              <Nav.Link className="" href="/home">Appointments</Nav.Link>
               {logedIn &&
                 <>
-                  <Nav.Link className="m-3" href="/unassignedJobs">Unassigned Jobs</Nav.Link>
-                  <Nav.Link className="m-3" href="/feedback">Your feedback</Nav.Link>
+                  <Nav.Link className="" href="/unassignedJobs">Unassigned Jobs</Nav.Link>
+                  <Nav.Link className="" href="/feedback">Your feedback</Nav.Link>
                 </>
               }
             </Nav>

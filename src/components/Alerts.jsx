@@ -41,9 +41,8 @@ export default function Alerts({ messages = [] }) {
       case 'warning':
         return (
           <Snackbar open={message.open} autoHideDurtion={6000} onClose={handleClose(index)} anchorOrigin={orientation} key={index}>
-            <AlertTitle>Warning</AlertTitle>
             <Alert severity="warning" onClose={handleClose(index)}>
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>Warning</AlertTitle>
               {message.message}
             </Alert>
           </Snackbar>
@@ -51,9 +50,8 @@ export default function Alerts({ messages = [] }) {
       case 'success':
         return (
           <Snackbar autoHideDurtion={4000} open={message.open} onClose={handleClose(index)} anchorOrigin={orientation} key={index}>
-            <AlertTitle>Success</AlertTitle>
             <Alert severity="success" onClose={handleClose(index)}>
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>Success</AlertTitle>
               {message.message}
             </Alert>
           </Snackbar>
@@ -62,9 +60,8 @@ export default function Alerts({ messages = [] }) {
       default:
         return (
           <Snackbar open={message.open} autoHideDurtion={6000} onClose={handleClose(index)} anchorOrigin={orientation} key={index}>
-            <AlertTitle>Info</AlertTitle>
             <Alert severity="info" onClose={handleClose(index)}>
-              <AlertTitle>Error</AlertTitle>
+              <AlertTitle>Info</AlertTitle>
               {message.message}
             </Alert>
           </Snackbar>
