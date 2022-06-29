@@ -118,7 +118,7 @@ export function FindMechanic() {
   }
 
   return (
-    <div className="m-5">
+    <div className="m-3 find-mechanic">
       <MessageModal message={messageModal} />
       <Card>
         <CardContent>

@@ -1,0 +1,27 @@
+.custom-navbar {
+}
+
+.home-image {
+  height: 100vh;
+  overflow: auto;
+  padding-bottom: 50px;
+  .home-calendar {
+    background-color: white;
+    border-radius: 7px;
+    &#calendar-container {
+      padding: 20px;
+    }
+    .MuiTab-textColorPrimary {
+      font-size: 14px;
+    }
+  }
+  .calendar-cards {
+    height: 100%;
+    overflow: auto;
+  }
+  #simple-tabpanel-0 {
+    height: 92%;
+    overflow: auto;
+    padding: 10px;
+  }
+}

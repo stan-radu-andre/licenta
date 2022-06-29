@@ -15,7 +15,7 @@ function Feedback() {
   }, [])
   return (
     <>
-      <Card className='card-max-width'>
+      <Card className='scroll-container-card card-max-width'>
         <CardContent>
           {stateAppointments.map((appointment) => (
             <FeedbackCard key={appointment._id} appointment={appointment} />

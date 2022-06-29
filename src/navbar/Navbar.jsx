@@ -46,12 +46,12 @@ function CustomNavbar() {
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='m-auto'>
-              <Nav.Link className="m-3" href="/home">Home</Nav.Link>
+              <Nav.Link className="" href="/home">Home</Nav.Link>
               {logedIn &&
                 <>
-                  <Nav.Link className="m-3" href="/findMechanic">Find a mechanic for you</Nav.Link>
+                  <Nav.Link className="" href="/findMechanic">Find a mechanic for you</Nav.Link>
 
-                  {/* <Nav.Link className="m-3" href="/fixYourself">Fix it yourself</Nav.Link> */}
+                  {/* <Nav.Link className="" href="/fixYourself">Fix it yourself</Nav.Link> */}
                 </>
               }
             </Nav>
