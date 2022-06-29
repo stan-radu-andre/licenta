@@ -35,8 +35,9 @@ function LoginRegisterClientForm(props) {
     const { ismechanic, formtype } = props;
     const formData = { ...form }
     if (formtype === 'register') {
-      formData['isMechanic'] = ismechanic;
+      formData['isMechanic'] = ismechanic === 'false' ? false : true;
     }
+    console.log(formData);
     postRequest(`http://localhost:4000/users/${formtype}`, formData)
       .then((response) => {
         setMessages([{ message: 'Success', type: 'success' }]);

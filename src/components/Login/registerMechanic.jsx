@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Grid,
   InputLabel,
@@ -85,7 +85,7 @@ function RegisterClient(props) {
   const removeCar = (index) => () => {
     if (cars.length > 1) {
       cars.splice(index, 1);
-      setCars(cars)
+      setCars([...cars])
     }
     else {
       setCars([
@@ -143,7 +143,6 @@ function RegisterClient(props) {
         setMessages([{ message: error, type: 'error' }]);
       })
   }
-
   return (
     <div
       role="tabpanel"

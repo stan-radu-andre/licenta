@@ -173,9 +173,6 @@ router.get('/appointments_user/:id', async (req, res, next) => {
         path: 'appointments',
         populate: {
           path: 'mechanic',
-          populate: {
-            path: 'mechanic',
-          },
         },
       })
       .then((user) => {

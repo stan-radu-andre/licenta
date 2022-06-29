@@ -42,7 +42,7 @@ function Home() {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
-      getRequest(`http://localhost:4000/users/appointments_user/${user._id}`)
+      getRequest(`http://localhost:4000/appointments/${user.isMechanic ? 'mechanic' : 'client'}/${user._id}/booked/`)
         .then((response) => {
           const { appointments } = response.data;
           setAppointments(appointments);
